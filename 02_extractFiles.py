@@ -15,39 +15,40 @@ weirdFormattedTitles = []
 countedLinesInFiles = 0 
 filesMissed = 0
 missedFilesList = []
+
 # Going through folders
 for root, dirs, files in os.walk(musicLocation):
 	# Going through files
-    for file in files:
-    	# print file
-    	# Finding _tracks.txt file a
-    	musicFileToExtractList = []
-        if not file.endswith("_tracks.txt"):
-        	# print "Rien ici " + file
-        	continue
-        else:
-        	# Program found a _tracks.txt file
-             print(os.path.join(root, file))
-             trackListCounter = trackListCounter + 1
-             # Create new folders branch in newFolder
-             destinationFolder = os.path.join(newFolder,root)
-             if not os.path.exists(destinationFolder):
-             	os.makedirs(destinationFolder)
-         	
-         	#Copying tracklist
-         	trackListFullPath = os.path.join(root, file)
-         	trackListCopyFullPath = os.path.join(destinationFolder, file)
-         	shutil.copy2(trackListFullPath, trackListCopyFullPath)
+	for file in files:
+		# Finding _tracks.txt file a
+		musicFileToExtractList = []
+		if not file.endswith("_tracks.txt"):
+			# print "Rien ici " + file
+			continue
+		else:
+			# Program found a _tracks.txt file
+			print(os.path.join(root, file))
+			trackListCounter = trackListCounter + 1
+			# Create new folders branch in newFolder
+			destinationFolder = os.path.join(newFolder,root.replace(musicLocation, ""))
+			if not os.path.exists(destinationFolder):
+				os.makedirs(destinationFolder)
+			print(destinationFolder)
+			#Copying tracklist
+			trackListFullPath = os.path.join(root, file)
+			trackListCopyFullPath = os.path.join(destinationFolder, file)
+			print(trackListFullPath, trackListCopyFullPath)
+			shutil.copy2(trackListFullPath, trackListCopyFullPath)
 
-             ## Extract track numbers
-             with open(os.path.join(root, file)) as openTrackFile:
+			## Extract track numbers
+			with open(os.path.join(root, file)) as openTrackFile:
 
-             	for line in openTrackFile:
+				for line in openTrackFile:
 
 					num = re.findall('\d+', line)
 					countedLinesInFiles +=1 
 					if num == []:
-						print "No number was found here, line is" + str(line)
+						print("No number was found here, line is" + str(line))
 						if line != '':
 							musicFileToExtractList.append(line)
 							newFileAdress = os.path.join(destinationFolder , line)
@@ -59,8 +60,8 @@ for root, dirs, files in os.walk(musicLocation):
 
 
 		# print root
-		print musicFileToExtractList
-		print countedLinesInFiles
+		print(musicFileToExtractList)
+		print(countedLinesInFiles)
 
 
 
@@ -95,25 +96,25 @@ for root, dirs, files in os.walk(musicLocation):
 					trackCounterOverflow = trackCounterOverflow +1
 					totalAudioFiles = totalAudioFiles + 1
 			if trackCounterOverflow > 1:
-				print "we might have an overflow issue here"
+				print("we might have an overflow issue here")
 				overFlowTotal += (trackCounterOverflow-1)
 				overFlowCount += 1
 				overFlowList.append(newFileAdress)
 			elif trackCounterOverflow == 0:
-				print "Hum, seems like we missed a file"
+				print("Hum, seems like we missed a file")
 				filesMissed += 1
 				missedFilesList.append(os.path.join(destinationFolder , musicFileToExtract))
 
-print "We extracted " + str(trackListCounter) + " playlist files and " + str(totalAudioFiles) + " audio files"
-print "There was " + str(overFlowCount) + " overflow events, for a total of " + str(overFlowTotal) + " overflow files"
+print("We extracted " + str(trackListCounter) + " playlist files and " + str(totalAudioFiles) + " audio files")
+print("There was " + str(overFlowCount) + " overflow events, for a total of " + str(overFlowTotal) + " overflow files")
 for overFlowEvent in overFlowList:
-	print overFlowEvent
-print "There were " + str(len(weirdFormattedTitles)) + " weird formatting events"
+	print(overFlowEvent)
+print("There were " + str(len(weirdFormattedTitles)) + " weird formatting events")
 for weirdTitle in weirdFormattedTitles:
-	print weirdTitle
+	print(weirdTitle)
 
-print "There were " + str(countedLinesInFiles) + " lines counted"
+print("There were " + str(countedLinesInFiles) + " lines counted")
 
-print "We missed " + str(filesMissed) + " files:"
+print("We missed " + str(filesMissed) + " files:")
 for missedFile in missedFilesList:
-	print missedFile
+	print(missedFile)
